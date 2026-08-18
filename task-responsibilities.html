@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Task Responsibility — Grow Room Roster</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #fbf9f5;
+    --bg-grain: #f6f3ec;
+    --surface: #ffffff;
+    --surface-alt: #f6f3ec;
+    --border: #e4ded2;
+    --border-soft: #ece7db;
+    --text: #241f19;
+    --text-dim: #6d6353;
+    --text-faint: #9c9284;
+
+    --leaf: #5c7a3a;
+    --leaf-dim: #e9f0dd;
+    --amber: #b8791f;
+    --amber-dim: #faf0da;
+    --burnt: #b35a2a;
+    --burnt-dim: #f9e7d9;
+    --red: #a13327;
+    --red-dim: #f6e1de;
+    --steel: #2f6a80;
+    --steel-dim: #dcedf3;
+    --violet: #6b4f97;
+    --violet-dim: #ede5f6;
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0;}
+
+  body{
+    background:
+      radial-gradient(ellipse 900px 500px at 15% -10%, rgba(184,121,31,0.07), transparent 60%),
+      radial-gradient(ellipse 700px 500px at 100% 10%, rgba(107,79,151,0.06), transparent 55%),
+      var(--bg);
+    color: var(--text);
+    font-family: 'IBM Plex Sans', sans-serif;
+    padding: 0 0 80px 0;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap{ max-width: 1180px; margin: 0 auto; padding: 0 28px; }
+
+  /* ---------- HEADER ---------- */
+  header{
+    padding: 56px 28px 40px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  header::before{
+    content:"";
+    position:absolute; inset:0;
+    background: repeating-linear-gradient(90deg, rgba(36,31,25,0.035) 0 1px, transparent 1px 64px);
+    pointer-events:none;
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 11.5px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--leaf);
+    display:flex; align-items:center; gap:10px;
+    margin-bottom: 18px;
+  }
+  .eyebrow .dot{ width:6px; height:6px; border-radius:50%; background: var(--leaf); box-shadow: 0 0 8px var(--leaf); }
+  h1{
+    font-family:'Oswald', sans-serif;
+    font-weight: 700;
+    font-size: clamp(34px, 5.4vw, 56px);
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
+    line-height: 1.02;
+    max-width: 820px;
+  }
+  h1 span{ color: var(--amber); }
+  .subhead{
+    margin-top:14px;
+    max-width: 640px;
+    color: var(--text-dim);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* ---------- SECTION LABEL ---------- */
+  .section{ padding: 52px 28px 0; }
+  .section-head{ display:flex; align-items:baseline; gap:16px; margin-bottom: 26px; }
+  .section-num{
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--text-faint);
+    letter-spacing: 0.1em;
+  }
+  .section-title{
+    font-family:'Oswald', sans-serif;
+    font-size: 22px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-weight: 600;
+  }
+  .section-title small{
+    display:block;
+    font-family:'IBM Plex Sans', sans-serif;
+    text-transform:none;
+    letter-spacing:normal;
+    font-weight:400;
+    font-size:13px;
+    color:var(--text-faint);
+    margin-top:4px;
+  }
+  .rule{ flex:1; height:1px; background: var(--border); }
+
+  /* ---------- LEADERSHIP ---------- */
+  .leader-strip{
+    display:flex;
+    align-items:center;
+    gap: 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 26px 30px;
+    flex-wrap: wrap;
+  }
+  .leader-box{
+    display:flex; align-items:center; gap:16px;
+    padding: 6px 20px;
+  }
+  .leader-rank{
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--amber);
+    line-height:1;
+    min-width: 42px;
+  }
+  .leader-box:nth-of-type(2) .leader-rank{ color: var(--burnt); }
+  .leader-name{
+    font-family:'Oswald', sans-serif;
+    font-size: 24px;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+  .leader-role{
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    margin-top: 2px;
+  }
+  .leader-connector{
+    flex:1;
+    min-width: 60px;
+    height: 1px;
+    background: repeating-linear-gradient(90deg, var(--border-soft) 0 8px, transparent 8px 14px);
+    position: relative;
+    margin: 0 10px;
+  }
+  .leader-connector::after{
+    content: "backs up";
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 9.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    position: absolute;
+    top: -18px;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+  }
+
+  /* ---------- ROSTER GRID ---------- */
+  .roster-grid{
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  }
+  .card{
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    display:flex;
+    flex-direction: column;
+  }
+  .card-head{
+    display:flex; align-items:center; justify-content:space-between;
+    padding: 16px 18px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+  }
+  .card-head .accent-bar{ position:absolute; left:0; top:0; bottom:0; width:4px; }
+  .card-name{
+    font-family:'Oswald', sans-serif;
+    font-size: 19px;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+  .card-tag{
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 9.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 20px;
+    border: 1px solid var(--border-soft);
+    color: var(--text-faint);
+  }
+  .task-list{ padding: 6px 0; flex:1; }
+  .task-row{
+    display:flex; align-items:flex-start; justify-content:space-between; gap: 10px;
+    padding: 10px 18px;
+    border-bottom: 1px solid var(--border-soft);
+    font-size: 13.5px;
+    line-height: 1.4;
+  }
+  .task-row:last-child{ border-bottom:none; }
+  .task-text{ color: var(--text); }
+  .task-note{ display:block; color: var(--text-faint); font-size: 11.5px; margin-top: 2px; }
+  .chip{
+    flex-shrink:0;
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 10.5px;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 5px;
+    white-space: nowrap;
+    letter-spacing: 0.03em;
+  }
+  .chip-rank1{ background: var(--amber-dim); color: var(--amber); border: 1px solid rgba(226,168,63,0.35); }
+  .chip-rank2{ background: var(--burnt-dim); color: var(--burnt); border: 1px solid rgba(207,122,67,0.35); }
+  .chip-rank3{ background: var(--steel-dim); color: var(--steel); border: 1px solid rgba(79,130,150,0.35); }
+  .chip-rank4{ background: var(--violet-dim); color: var(--violet); border: 1px solid rgba(132,103,176,0.35); }
+  .chip-phase{ background: var(--leaf-dim); color: var(--leaf); border: 1px solid rgba(127,155,82,0.4); }
+
+  /* ---------- CHAINS ---------- */
+  .chains{ display:flex; flex-direction:column; gap:10px; }
+  .chain-row{
+    display:flex; align-items:center; gap: 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 20px;
+    flex-wrap: wrap;
+  }
+  .chain-label{
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    min-width: 190px;
+  }
+  .chain-nodes{ display:flex; align-items:center; gap: 8px; flex-wrap: wrap; }
+  .chain-node{
+    display:flex; align-items:center; gap:8px;
+    background: var(--surface-alt);
+    border: 1px solid var(--border-soft);
+    border-radius: 20px;
+    padding: 5px 12px 5px 6px;
+    font-size: 13px;
+  }
+  .chain-node .rank-dot{
+    width: 20px; height:20px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 10px; font-weight:600;
+    color: var(--bg);
+  }
+  .chain-arrow{ color: var(--text-faint); font-size: 15px; }
+
+  /* ---------- PHASES ---------- */
+  .phases{
+    display:grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+  }
+  .phase-card{
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    position: relative;
+  }
+  .phase-num{
+    font-family:'Oswald', sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    color: var(--leaf);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .phase-days{
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .phase-days small{ font-size:12px; color: var(--text-faint); font-weight:400; }
+  .phase-who{
+    margin-top: 14px;
+    display:flex; align-items:center; gap:8px;
+    font-family:'Oswald', sans-serif;
+    font-size: 15px;
+    text-transform: uppercase;
+    padding-top: 12px;
+    border-top: 1px dashed var(--border-soft);
+  }
+  .phase-net{ font-size: 11px; color: var(--text-faint); margin-top: 8px; }
+  .phase-track{
+    display:flex; gap:3px; margin-top: 8px;
+  }
+  .phase-track span{ flex:1; height:3px; border-radius:2px; background: var(--border-soft); }
+  .phase-card[data-p="1"] .phase-track span:nth-child(1){ background: var(--leaf); }
+  .phase-card[data-p="2"] .phase-track span:nth-child(-n+2){ background: var(--leaf); }
+  .phase-card[data-p="3"] .phase-track span:nth-child(-n+3){ background: var(--leaf); }
+  .phase-card[data-p="4"] .phase-track span{ background: var(--leaf); }
+
+  /* ---------- RULES ---------- */
+  .rules{
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 8px 0;
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  .rule-item{
+    display:flex; gap:12px;
+    padding: 14px 24px;
+    border-bottom: 1px solid var(--border-soft);
+    font-size: 13.5px;
+    line-height:1.5;
+    color: var(--text-dim);
+  }
+  .rule-item b{ color: var(--text); font-weight:500; }
+  .rule-mark{ color: var(--amber); font-family:'IBM Plex Mono', monospace; flex-shrink:0; }
+
+  footer{
+    padding: 40px 28px 0;
+    text-align:center;
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--text-faint);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 900px){
+    .roster-grid{ grid-template-columns: 1fr 1fr; }
+    .phases{ grid-template-columns: 1fr 1fr; }
+    .rules{ grid-template-columns: 1fr; }
+  }
+  /* ---------- EDIT TOOLBAR ---------- */
+  #edit-toolbar{
+    position: fixed;
+    top: 18px; right: 18px;
+    z-index: 999;
+    display:flex; gap:8px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 30px;
+    padding: 6px;
+    box-shadow: 0 4px 18px rgba(36,31,25,0.12);
+  }
+  #edit-toolbar button{
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border: none;
+    background: transparent;
+    color: var(--text-dim);
+    padding: 8px 14px;
+    border-radius: 24px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+  }
+  #edit-toolbar button.lang-btn{ padding: 8px 12px; font-weight:600; }
+  #edit-toolbar button.lang-btn.active{ background: var(--leaf); color: #fff; }
+  #edit-toolbar .divider{ width:1px; background: var(--border); margin: 4px 2px; }
+  #edit-toolbar button:hover{ background: var(--surface-alt); color: var(--text); }
+  #edit-toolbar button.active{ background: var(--leaf-dim); color: var(--leaf); }
+  #edit-toolbar #save-status{
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--text-faint);
+    display:flex; align-items:center;
+    padding: 0 6px;
+    white-space: nowrap;
+  }
+  body.edit-mode .editable{
+    cursor: text;
+    border-radius: 4px;
+    outline: 1px dashed transparent;
+    transition: outline-color 0.15s, background 0.15s;
+  }
+  body.edit-mode .editable:hover{ outline-color: var(--amber); background: var(--amber-dim); }
+  body.edit-mode .editable:focus{ outline: 1px solid var(--amber); background: var(--amber-dim); }
+
+  @media (max-width: 620px){
+    .roster-grid{ grid-template-columns: 1fr; }
+    .phases{ grid-template-columns: 1fr; }
+    .leader-connector{ display:none; }
+    .chain-label{ min-width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+  <header>
+    <div class="wrap">
+      <div class="eyebrow"><span class="dot"></span> <span class="editable" data-en="Flower Room · Crew Assignments" data-es="Sala de Floración · Asignaciones del Equipo">Flower Room · Crew Assignments</span></div>
+      <h1 class="editable" data-en="Task &lt;span&gt;Responsibility&lt;/span&gt; Board" data-es="Tablero de &lt;span&gt;Responsabilidades&lt;/span&gt;">Task <span>Responsibility</span> Board</h1>
+      <p class="subhead editable">Who owns what on the floor — leadership order, backup coverage for every rotating duty, and the pot-checking phase map.</p>
+    </div>
+  </header>
+
+  <!-- LEADERSHIP -->
+  <div class="section">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="section-num">01</span>
+        <span class="section-title"><span class="editable" data-en="Leadership" data-es="Liderazgo">Leadership</span></span>
+        <div class="rule"></div>
+      </div>
+      <div class="leader-strip">
+        <div class="leader-box">
+          <div class="leader-rank">01</div>
+          <div>
+            <div class="leader-name editable">Eugenio</div>
+            <div class="leader-role editable" data-en="Leader #1" data-es="Líder #1">Leader #1</div>
+          </div>
+        </div>
+        <div class="leader-connector"></div>
+        <div class="leader-box">
+          <div class="leader-rank">02</div>
+          <div>
+            <div class="leader-name editable">Fortino</div>
+            <div class="leader-role editable" data-en="Leader #2" data-es="Líder #2">Leader #2</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROSTER -->
+  <div class="section">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="section-num">02</span>
+        <span class="section-title"><span class="editable" data-en="Crew Roster " data-es="Equipo de Trabajo ">Crew Roster </span><small class="editable" data-en="Full task list by person — numbered chips show priority order on shared duties" data-es="Lista completa de tareas por persona — las etiquetas numeradas muestran el orden de prioridad en tareas compartidas">Full task list by person — numbered chips show priority order on shared duties</small></span>
+        <div class="rule"></div>
+      </div>
+
+      <div class="roster-grid">
+
+        <!-- EUGENIO -->
+        <div class="card">
+          <div class="card-head" style="background:var(--amber-dim)10;">
+            <div class="accent-bar" style="background:var(--amber)"></div>
+            <span class="card-name editable">Eugenio</span>
+            <span class="card-tag editable" data-en="Leader #1" data-es="Líder #1">Leader #1</span>
+          </div>
+          <div class="task-list">
+            <div class="task-row"><span class="task-text editable" data-en="Room check" data-es="Revisión de sala">Room check</span><span class="chip chip-rank1">№1</span></div>
+            <div class="task-row"><span class="task-text"><span class="editable" data-en="Pot checking" data-es="Revisión de macetas">Pot checking</span> <span class="task-note editable" data-en="Stage 3 · Day 33–48" data-es="Etapa 3 · Día 33–48">Stage 3 · Day 33–48</span></span><span class="chip chip-phase">S3</span></div>
+            <div class="task-row"><span class="task-text editable" data-en="Tool room organizer + unloading supply" data-es="Organizador del cuarto de herramientas + descarga de suministro">Tool room organizer + unloading supply</span></div>
+            <div class="task-row"><span class="task-text editable" data-en="Pest inspection" data-es="Inspección de plagas">Pest inspection</span><span class="chip chip-rank2">№2</span></div>
+            <div class="task-row"><span class="task-text"><span class="editable" data-en="Equipment inspection" data-es="Inspección de equipo">Equipment inspection</span> <span class="task-note editable" data-en="min. twice a week" data-es="mín. dos veces por semana">min. twice a week</span></span></div>
+            <div class="task-row"><span class="task-text editable" data-en="Supply check list" data-es="Lista de verificación de suministros">Supply check list</span><span class="chip chip-rank1">№1</span></div>
+          </div>
+        </div>
+
+        <!-- JULIAN -->
+        <div class="card">
+          <div class="card-head">
+            <div class="accent-bar" style="background:var(--leaf)"></div>
+            <span class="card-name editable">Julian</span>
+            <span class="card-tag editable" data-en="Crew" data-es="Equipo">Crew</span>
+          </div>
+          <div class="task-list">
+            <div class="task-row"><span class="task-text editable" data-en="Pesticide spray" data-es="Aspersión de pesticida">Pesticide spray</span><span class="chip chip-rank1">№1</span></div>
+            <div class="task-row"><span class="task-text editable" data-en="Pesticide room organizer" data-es="Organizador del cuarto de pesticidas">Pesticide room organizer</span></div>
+            <div class="task-row"><span class="task-text"><span class="editable" data-en="Green clean + Senadate 2 tank" data-es="Limpieza verde + tanque Senadate 2">Green clean + Senadate 2 tank</span> <span class="task-note editable" data-en="every week" data-es="cada semana">every week</span></span></div>
+            <div class="task-row"><span class="task-text"><span class="editable" data-en="Calibration" data-es="Calibración">Calibration</span> <span class="task-note editable" data-en="once a week" data-es="una vez por semana">once a week</span></span></div>
+            <div class="task-row"><span class="task-text editable" data-en="Pest inspection" data-es="Inspección de plagas">Pest inspection</span><span class="chip chip-rank1">№1</span></div>
+            <div class="task-row"><span class="task-text"><span class="editable" data-en="Flushing table line + front valve" data-es="Purga de línea de mesa + válvula frontal">Flushing table line + front valve</span> <span class="task-note editable" data-en="once a week" data-es="una vez por semana">once a week</span></span></div>
+          </div>
+        </div>
+
+        <!-- FORTINO -->
+        <div class="card">
+          <div class="card-head">
+            <div class="accent-bar" style="background:var(--burnt)"></div>
+            <span class="card-name editable">Fortino</span>
+            <span class="card-tag editable" data-en="Leader #2" data-es="Líder #2">Leader #2</span>
+          </div>
+          <div class="task-list">
+            <div class="task-row"><span class="task-text editable" data-en="Room check" data-es="Revisión de sala">Room check</span><span class="chip chip-rank2">№2</span></div>
+            <div class="task-row"><span class="task-text"><span class="editable" data-en="Pot checking" data-es="Revisión de macetas">Pot checking</span> <span class="task-note editable" data-en="Stage 1 · Day 1–16" data-es="Etapa 1 · Día 1–16">Stage 1 · Day 1–16</span></span><span class="chip chip-phase">S1</span></div>
+            <div class="task-row"><span class="task-text editable" data-en="EC recording" data-es="Registro de EC">EC recording</span></div>
+            <div class="task-row"><span class="task-text editable" data-en="Repairing" data-es="Reparaciones">Repairing</span><span class="chip chip-rank3">№3</span></div>
+            <div class="task-row"><span class="task-text editable" data-en="Pest inspection" data-es="Inspección de plagas">Pest inspection</span><span class="chip chip-rank3">№3</span></div>
+          </div>
+        </div>
+
+        <!-- ANAYELI -->
+        <div class="card">
+          <div class="card-head">
+            <div class="accent-bar" style="background:var(--red)"></div>
+            <span class="card-name editable">Anayeli</span>
+            <span class="card-tag editable" data-en="Crew" data-es="Equipo">Crew</span>
+          </div>
+          <div class="task-list">
+            <div class="task-row"><span class="task-text editable" data-en="Room cleaning" data-es="Limpieza de sala">Room cleaning</span></div>
+            <div class="task-row"><span class="task-text editable" data-en="Cleaning filter" data-es="Limpieza de filtro">Cleaning filter</span></div>
+            <div class="task-row"><span class="task-text"><span class="editable" data-en="Plant spacing" data-es="Espaciado de plantas">Plant spacing</span> <span class="task-note editable" data-en="in charge of" data-es="a cargo de">in charge of</span></span></div>
+            <div class="task-row"><span class="task-text editable" data-en="Washing clothes" data-es="Lavado de ropa">Washing clothes</span></div>
+            <div class="task-row"><span class="task-text editable" data-en="Cleaning supply check" data-es="Verificación de suministros de limpieza">Cleaning supply check</span></div>
+            <div class="task-row"><span class="task-text editable" data-en="Cleaning room organizer" data-es="Organizador del cuarto de limpieza">Cleaning room organizer</span></div>
+          </div>
+        </div>
+
+        <!-- RAMIRO -->
+        <div class="card">
+          <div class="card-head">
+            <div class="accent-bar" style="background:var(--steel)"></div>
+            <span class="card-name editable">Ramiro</span>
+            <span class="card-tag editable" data-en="Crew" data-es="Equipo">Crew</span>
+          </div>
+          <div class="task-list">
+            <div class="task-row"><span class="task-text editable" data-en="CO2 tanks" data-es="Tanques de CO2">CO2 tanks</span><span class="chip chip-rank1 editable" data-en="1st" data-es="1º">1st</span></div>
+            <div class="task-row"><span class="task-text editable" data-en="Storage room organizer" data-es="Organizador del cuarto de almacenamiento">Storage room organizer</span><span class="chip chip-rank1">№1</span></div>
+            <div class="task-row"><span class="task-text"><span class="editable" data-en="Pot checking" data-es="Revisión de macetas">Pot checking</span> <span class="task-note editable" data-en="Stage 4 · Day 49–64" data-es="Etapa 4 · Día 49–64">Stage 4 · Day 49–64</span></span><span class="chip chip-phase">S4</span></div>
+            <div class="task-row"><span class="task-text editable" data-en="Repairing" data-es="Reparaciones">Repairing</span><span class="chip chip-rank2">№2</span></div>
+            <div class="task-row"><span class="task-text editable" data-en="Pest inspection" data-es="Inspección de plagas">Pest inspection</span><span class="chip chip-rank4">№4</span></div>
+            <div class="task-row"><span class="task-text editable" data-en="Pesticide spray" data-es="Aspersión de pesticida">Pesticide spray</span><span class="chip chip-rank2">№2</span></div>
+            <div class="task-row"><span class="task-text editable" data-en="Supply check list" data-es="Lista de verificación de suministros">Supply check list</span><span class="chip chip-rank2">№2</span></div>
+          </div>
+        </div>
+
+        <!-- ARTEMIO -->
+        <div class="card">
+          <div class="card-head">
+            <div class="accent-bar" style="background:var(--violet)"></div>
+            <span class="card-name editable">Artemio</span>
+            <span class="card-tag editable" data-en="Crew" data-es="Equipo">Crew</span>
+          </div>
+          <div class="task-list">
+            <div class="task-row"><span class="task-text editable" data-en="CO2 tanks" data-es="Tanques de CO2">CO2 tanks</span><span class="chip chip-rank2 editable" data-en="2nd" data-es="2º">2nd</span></div>
+            <div class="task-row"><span class="task-text"><span class="editable" data-en="Pot checking" data-es="Revisión de macetas">Pot checking</span> <span class="task-note editable" data-en="Stage 2 · Day 17–32" data-es="Etapa 2 · Día 17–32">Stage 2 · Day 17–32</span></span><span class="chip chip-phase">S2</span></div>
+            <div class="task-row"><span class="task-text editable" data-en="Repairing" data-es="Reparaciones">Repairing</span><span class="chip chip-rank1">№1</span></div>
+            <div class="task-row"><span class="task-text editable" data-en="Floor map" data-es="Mapa del piso">Floor map</span></div>
+            <div class="task-row"><span class="task-text editable" data-en="Mopping + spray the wall" data-es="Trapear + rociar la pared">Mopping + spray the wall</span></div>
+            <div class="task-row"><span class="task-text editable" data-en="Room cleaning" data-es="Limpieza de sala">Room cleaning</span><span class="chip chip-rank2">№2</span></div>
+            <div class="task-row"><span class="task-text editable" data-en="Storage room organizer" data-es="Organizador del cuarto de almacenamiento">Storage room organizer</span><span class="chip chip-rank2">№2</span></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- CHAINS -->
+  <div class="section">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="section-num">03</span>
+        <span class="section-title"><span class="editable" data-en="Chain of Responsibility " data-es="Cadena de Responsabilidad ">Chain of Responsibility </span><small class="editable" data-en="Primary owner first — next in line steps in if the #1 is out" data-es="El responsable principal va primero — el siguiente en la fila cubre si el #1 no está">Primary owner first — next in line steps in if the #1 is out</small></span>
+        <div class="rule"></div>
+      </div>
+      <div class="chains">
+
+        <div class="chain-row">
+          <span class="chain-label editable" data-en="Leadership" data-es="Liderazgo">Leadership</span>
+          <div class="chain-nodes">
+            <div class="chain-node"><span class="rank-dot" style="background:var(--amber)">1</span><span class="editable">Eugenio</span></div>
+            <span class="chain-arrow">→</span>
+            <div class="chain-node"><span class="rank-dot" style="background:var(--burnt)">2</span><span class="editable">Fortino</span></div>
+          </div>
+        </div>
+
+        <div class="chain-row">
+          <span class="chain-label editable" data-en="Room check" data-es="Revisión de sala">Room check</span>
+          <div class="chain-nodes">
+            <div class="chain-node"><span class="rank-dot" style="background:var(--amber)">1</span><span class="editable">Eugenio</span></div>
+            <span class="chain-arrow">→</span>
+            <div class="chain-node"><span class="rank-dot" style="background:var(--burnt)">2</span><span class="editable">Fortino</span></div>
+          </div>
+        </div>
+
+        <div class="chain-row">
+          <span class="chain-label editable" data-en="Pest inspection" data-es="Inspección de plagas">Pest inspection</span>
+          <div class="chain-nodes">
+            <div class="chain-node"><span class="rank-dot" style="background:var(--amber)">1</span><span class="editable">Julian</span></div>
+            <span class="chain-arrow">→</span>
+            <div class="chain-node"><span class="rank-dot" style="background:var(--burnt)">2</span><span class="editable">Eugenio</span></div>
+            <span class="chain-arrow">→</span>
+            <div class="chain-node"><span class="rank-dot" style="background:var(--steel)">3</span><span class="editable">Fortino</span></div>
+            <span class="chain-arrow">→</span>
+            <div class="chain-node"><span class="rank-dot" style="background:var(--violet)">4</span><span class="editable">Ramiro</span></div>
+          </div>
+        </div>
+
+        <div class="chain-row">
+          <span class="chain-label editable" data-en="Repairing" data-es="Reparaciones">Repairing</span>
+          <div class="chain-nodes">
+            <div class="chain-node"><span class="rank-dot" style="background:var(--amber)">1</span><span class="editable">Artemio</span></div>
+            <span class="chain-arrow">→</span>
+            <div class="chain-node"><span class="rank-dot" style="background:var(--burnt)">2</span><span class="editable">Ramiro</span></div>
+            <span class="chain-arrow">→</span>
+            <div class="chain-node"><span class="rank-dot" style="background:var(--steel)">3</span><span class="editable">Fortino</span></div>
+          </div>
+        </div>
+
+        <div class="chain-row">
+          <span class="chain-label editable" data-en="Pesticide spray" data-es="Aspersión de pesticida">Pesticide spray</span>
+          <div class="chain-nodes">
+            <div class="chain-node"><span class="rank-dot" style="background:var(--amber)">1</span><span class="editable">Julian</span></div>
+            <span class="chain-arrow">→</span>
+            <div class="chain-node"><span class="rank-dot" style="background:var(--burnt)">2</span><span class="editable">Ramiro</span></div>
+          </div>
+        </div>
+
+        <div class="chain-row">
+          <span class="chain-label editable" data-en="Supply check list" data-es="Lista de verificación de suministros">Supply check list</span>
+          <div class="chain-nodes">
+            <div class="chain-node"><span class="rank-dot" style="background:var(--amber)">1</span><span class="editable">Eugenio</span></div>
+            <span class="chain-arrow">→</span>
+            <div class="chain-node"><span class="rank-dot" style="background:var(--burnt)">2</span><span class="editable">Ramiro</span></div>
+          </div>
+        </div>
+
+        <div class="chain-row">
+          <span class="chain-label editable" data-en="Storage room organizer" data-es="Organizador del cuarto de almacenamiento">Storage room organizer</span>
+          <div class="chain-nodes">
+            <div class="chain-node"><span class="rank-dot" style="background:var(--amber)">1</span><span class="editable">Ramiro</span></div>
+            <span class="chain-arrow">→</span>
+            <div class="chain-node"><span class="rank-dot" style="background:var(--burnt)">2</span><span class="editable">Artemio</span></div>
+          </div>
+        </div>
+
+        <div class="chain-row">
+          <span class="chain-label editable" data-en="CO2 tanks" data-es="Tanques de CO2">CO2 tanks</span>
+          <div class="chain-nodes">
+            <div class="chain-node"><span class="rank-dot" style="background:var(--amber)">1</span><span class="editable">Ramiro</span></div>
+            <span class="chain-arrow">→</span>
+            <div class="chain-node"><span class="rank-dot" style="background:var(--burnt)">2</span><span class="editable">Artemio</span></div>
+          </div>
+        </div>
+
+        <div class="chain-row">
+          <span class="chain-label editable" data-en="Room cleaning" data-es="Limpieza de sala">Room cleaning</span>
+          <div class="chain-nodes">
+            <div class="chain-node"><span class="rank-dot" style="background:var(--amber)">1</span><span class="editable">Anayeli</span></div>
+            <span class="chain-arrow">→</span>
+            <div class="chain-node"><span class="rank-dot" style="background:var(--burnt)">2</span><span class="editable">Artemio</span></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- POT CHECKING PHASES -->
+  <div class="section">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="section-num">04</span>
+        <span class="section-title"><span class="editable" data-en="Pot Checking Phases " data-es="Fases de Revisión de Macetas ">Pot Checking Phases </span><small class="editable" data-en="64-day cycle, split into 4 stages — one owner per stage" data-es="Ciclo de 64 días, dividido en 4 etapas — un responsable por etapa">64-day cycle, split into 4 stages — one owner per stage</small></span>
+        <div class="rule"></div>
+      </div>
+      <div class="phases">
+
+        <div class="phase-card" data-p="1">
+          <div class="phase-num editable" data-en="Stage 1" data-es="Etapa 1">Stage 1</div>
+          <div class="phase-days editable" data-en="Day 1–16" data-es="Día 1–16">Day 1–16</div>
+          <div class="phase-track"><span></span><span></span><span></span><span></span></div>
+          <div class="phase-net editable" data-en="Net layer: 1st layer — green net" data-es="Capa de malla: primera capa — malla verde">Net layer: 1st layer — green net</div>
+          <div class="phase-who"><span class="rank-dot" style="background:var(--burnt); width:20px;height:20px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:10px;">F</span> <span class="editable">Fortino</span></div>
+        </div>
+
+        <div class="phase-card" data-p="2">
+          <div class="phase-num editable" data-en="Stage 2" data-es="Etapa 2">Stage 2</div>
+          <div class="phase-days editable" data-en="Day 17–32" data-es="Día 17–32">Day 17–32</div>
+          <div class="phase-track"><span></span><span></span><span></span><span></span></div>
+          <div class="phase-net editable" data-en="Net layer: 2nd–4th layer — white net" data-es="Capa de malla: capas 2ª–4ª — malla blanca">Net layer: 2nd–4th layer — white net</div>
+          <div class="phase-who"><span class="rank-dot" style="background:var(--violet); width:20px;height:20px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:10px;">A</span> <span class="editable">Artemio</span></div>
+        </div>
+
+        <div class="phase-card" data-p="3">
+          <div class="phase-num editable" data-en="Stage 3" data-es="Etapa 3">Stage 3</div>
+          <div class="phase-days editable" data-en="Day 33–48" data-es="Día 33–48">Day 33–48</div>
+          <div class="phase-track"><span></span><span></span><span></span><span></span></div>
+          <div class="phase-net editable" data-en="Net layer: 2nd–4th layer — white net" data-es="Capa de malla: capas 2ª–4ª — malla blanca">Net layer: 2nd–4th layer — white net</div>
+          <div class="phase-who"><span class="rank-dot" style="background:var(--amber); width:20px;height:20px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:10px;">E</span> <span class="editable">Eugenio</span></div>
+        </div>
+
+        <div class="phase-card" data-p="4">
+          <div class="phase-num editable" data-en="Stage 4" data-es="Etapa 4">Stage 4</div>
+          <div class="phase-days editable" data-en="Day 49–64" data-es="Día 49–64">Day 49–64</div>
+          <div class="phase-track"><span></span><span></span><span></span><span></span></div>
+          <div class="phase-net editable" data-en="Net layer: 2nd–4th layer — white net" data-es="Capa de malla: capas 2ª–4ª — malla blanca">Net layer: 2nd–4th layer — white net</div>
+          <div class="phase-who"><span class="rank-dot" style="background:var(--steel); width:20px;height:20px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:10px;">R</span> <span class="editable">Ramiro</span></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- HOUSE RULES -->
+  <div class="section">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="section-num">05</span>
+        <span class="section-title"><span class="editable" data-en="House Rules " data-es="Reglas de la Casa ">House Rules </span><small class="editable" data-en="Applies to everyone, every shift" data-es="Aplica a todos, en cada turno">Applies to everyone, every shift</small></span>
+        <div class="rule"></div>
+      </div>
+      <div class="rules">
+        <div class="rule-item"><span class="rule-mark">·</span><span class="editable" data-en="&lt;b&gt;Keep every room clean&lt;/b&gt; — grow room, pesticide room, storage room, and tool room." data-es="&lt;b&gt;Mantén cada sala limpia&lt;/b&gt; — sala de cultivo, sala de pesticidas, sala de almacenamiento y cuarto de herramientas."><b>Keep every room clean</b> — grow room, pesticide room, storage room, and tool room.</span></div>
+        <div class="rule-item"><span class="rule-mark">·</span><span class="editable" data-en="&lt;b&gt;Return tools&lt;/b&gt; to their place — don't leave them in the hallway at end of day." data-es="&lt;b&gt;Regresa las herramientas&lt;/b&gt; a su lugar — no las dejes en el pasillo al final del día."><b>Return tools</b> to their place — don't leave them in the hallway at end of day.</span></div>
+        <div class="rule-item"><span class="rule-mark">·</span><span class="editable" data-en="&lt;b&gt;Return the pushing chart&lt;/b&gt; to the outside water room." data-es="&lt;b&gt;Regresa la tabla de empuje&lt;/b&gt; al cuarto de agua exterior."><b>Return the pushing chart</b> to the outside water room.</span></div>
+        <div class="rule-item"><span class="rule-mark">·</span><span class="editable" data-en="&lt;b&gt;Disconnect the water hose&lt;/b&gt; when you're done using it." data-es="&lt;b&gt;Desconecta la manguera de agua&lt;/b&gt; cuando termines de usarla."><b>Disconnect the water hose</b> when you're done using it.</span></div>
+        <div class="rule-item"><span class="rule-mark">·</span><span class="editable" data-en="&lt;b&gt;Pot checking is a full inspection&lt;/b&gt;, not just your assigned task — if a table is uneven, flag it to the group for a full pot check." data-es="&lt;b&gt;La revisión de macetas es una inspección completa&lt;/b&gt;, no solo tu tarea asignada — si una mesa está despareja, avísale al grupo para hacer una revisión completa."><b>Pot checking is a full inspection</b>, not just your assigned task — if a table is uneven, flag it to the group for a full pot check.</span></div>
+        <div class="rule-item"><span class="rule-mark">·</span><span class="editable" data-en="&lt;b&gt;Don't place pots randomly&lt;/b&gt; while pot checking." data-es="&lt;b&gt;No coloques las macetas al azar&lt;/b&gt; durante la revisión."><b>Don't place pots randomly</b> while pot checking.</span></div>
+        <div class="rule-item"><span class="rule-mark">·</span><span class="editable" data-en="&lt;b&gt;Plant spacing goal:&lt;/b&gt; twice a week for weeks 1–3, then once a week for weeks 4–9." data-es="&lt;b&gt;Meta de espaciado de plantas:&lt;/b&gt; dos veces por semana en las semanas 1–3, luego una vez por semana en las semanas 4–9."><b>Plant spacing goal:</b> twice a week for weeks 1–3, then once a week for weeks 4–9.</span></div>
+        <div class="rule-item"><span class="rule-mark">·</span><span class="editable" data-en="&lt;b&gt;Net layers:&lt;/b&gt; 1st layer uses green net; 2nd–4th layer uses white net." data-es="&lt;b&gt;Capas de malla:&lt;/b&gt; la 1ª capa usa malla verde; de la 2ª a la 4ª capa usa malla blanca."><b>Net layers:</b> 1st layer uses green net; 2nd–4th layer uses white net.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="editable">Grow Room Crew — Task Responsibility Board</footer>
+
+  <div id="edit-toolbar">
+    <button id="lang-en" class="lang-btn active">EN</button>
+    <button id="lang-es" class="lang-btn">ES</button>
+    <div class="divider"></div>
+    <button id="toggle-edit">✎ Edit text</button>
+    <button id="download-html">⬇ Save to file</button>
+    <button id="reset-edit">Reset</button>
+    <span id="save-status"></span>
+  </div>
+
+  <script>
+    (function(){
+      const editables = Array.from(document.querySelectorAll('.editable'));
+      const toggleBtn = document.getElementById('toggle-edit');
+      const resetBtn = document.getElementById('reset-edit');
+      const langEnBtn = document.getElementById('lang-en');
+      const langEsBtn = document.getElementById('lang-es');
+      const downloadBtn = document.getElementById('download-html');
+      const status = document.getElementById('save-status');
+      let lang = 'en';
+      let editing = false;
+      let saveTimer = null;
+
+      const UI_TEXT = {
+        en: { edit: '✎ Edit text', done: '✓ Done editing', reset: 'Reset', download: '⬇ Save to file', saving: 'Saving…', saved: 'Saved', unavailable: 'Not saved (storage unavailable)', confirmReset: 'Clear your saved edits for this language and reload the original text?', downloaded: 'Downloaded' },
+        es: { edit: '✎ Editar texto', done: '✓ Edición lista', reset: 'Reiniciar', download: '⬇ Guardar archivo', saving: 'Guardando…', saved: 'Guardado', unavailable: 'No se guardó (almacenamiento no disponible)', confirmReset: '¿Borrar tus ediciones guardadas para este idioma y volver al texto original?', downloaded: 'Descargado' }
+      };
+
+      function storageKey(l){ return 'dashboard-text-edits-' + l; }
+
+      async function getEdits(l){
+        try{
+          const result = await window.storage.get(storageKey(l), false);
+          if(result && result.value){ return JSON.parse(result.value); }
+        }catch(e){}
+        return {};
+      }
+
+      function setStatus(msg){
+        status.textContent = msg;
+        if(msg){ setTimeout(() => { if(status.textContent === msg) status.textContent = ''; }, 1800); }
+      }
+
+      // Apply base translation (data-en/data-es) to every element that has it
+      function applyBaseTranslation(l){
+        editables.forEach(el => {
+          const val = l === 'es' ? el.dataset.es : el.dataset.en;
+          if(val !== undefined){ el.innerHTML = val; }
+        });
+      }
+
+      // Overlay any saved user edits for this language on top of the base translation
+      async function loadEdits(l){
+        try{
+          const result = await window.storage.get(storageKey(l), false);
+          if(result && result.value){
+            const saved = JSON.parse(result.value);
+            editables.forEach((el, i) => {
+              if(saved[i] !== undefined){ el.innerHTML = saved[i]; }
+            });
+          }
+        }catch(e){
+          // no saved edits yet, or storage unavailable — fine, base translation stands
+        }
+      }
+
+      async function saveEdits(){
+        try{
+          const data = {};
+          editables.forEach((el, i) => { data[i] = el.innerHTML; });
+          await window.storage.set(storageKey(lang), JSON.stringify(data), false);
+          setStatus(UI_TEXT[lang].saved);
+        }catch(e){
+          setStatus(UI_TEXT[lang].unavailable);
+        }
+      }
+
+      function scheduleSave(){
+        setStatus(UI_TEXT[lang].saving);
+        clearTimeout(saveTimer);
+        saveTimer = setTimeout(saveEdits, 600);
+      }
+
+      async function switchLanguage(newLang){
+        lang = newLang;
+        langEnBtn.classList.toggle('active', lang === 'en');
+        langEsBtn.classList.toggle('active', lang === 'es');
+        toggleBtn.textContent = editing ? UI_TEXT[lang].done : UI_TEXT[lang].edit;
+        resetBtn.textContent = UI_TEXT[lang].reset;
+        downloadBtn.textContent = UI_TEXT[lang].download;
+        applyBaseTranslation(lang);
+        await loadEdits(lang);
+        try{ await window.storage.set('dashboard-lang', lang, false); }catch(e){}
+      }
+
+      toggleBtn.addEventListener('click', () => {
+        editing = !editing;
+        document.body.classList.toggle('edit-mode', editing);
+        toggleBtn.classList.toggle('active', editing);
+        toggleBtn.textContent = editing ? UI_TEXT[lang].done : UI_TEXT[lang].edit;
+        editables.forEach(el => { el.setAttribute('contenteditable', editing ? 'true' : 'false'); });
+      });
+
+      resetBtn.addEventListener('click', async () => {
+        if(!confirm(UI_TEXT[lang].confirmReset)) return;
+        try{ await window.storage.delete(storageKey(lang), false); }catch(e){}
+        applyBaseTranslation(lang);
+      });
+
+      async function buildExportHtml(){
+        // Storage (Claude's in-app persistence) is a bonus source for the language you're
+        // NOT currently viewing — it may not exist at all once this file is hosted elsewhere,
+        // so the text actually on screen right now is always the source of truth.
+        const otherLang = lang === 'es' ? 'en' : 'es';
+        const otherEdits = await getEdits(otherLang);
+        const clone = document.documentElement.cloneNode(true);
+        const cloneToolbar = clone.querySelector('#edit-toolbar');
+        if(cloneToolbar) cloneToolbar.remove();
+        const cloneEditables = Array.from(clone.querySelectorAll('.editable'));
+        cloneEditables.forEach((el, i) => {
+          if(el.hasAttribute('data-en')){
+            // el.innerHTML right now IS the current live text for `lang` — bake it as that
+            // language's new default, and only touch the other language if we have data for it.
+            if(lang === 'en'){
+              el.setAttribute('data-en', el.innerHTML);
+              if(otherEdits[i] !== undefined){ el.setAttribute('data-es', otherEdits[i]); }
+            } else {
+              el.setAttribute('data-es', el.innerHTML);
+              if(otherEdits[i] !== undefined){ el.setAttribute('data-en', otherEdits[i]); }
+            }
+          }
+          // untranslatable elements (names, etc.) already carry the correct live text — no change needed
+          el.removeAttribute('contenteditable');
+        });
+        clone.classList.remove('edit-mode');
+        // re-attach the toolbar so the exported file stays fully functional
+        if(cloneToolbar){ clone.querySelector('body').appendChild(cloneToolbar); }
+        return '<!DOCTYPE html>\n' + clone.outerHTML;
+      }
+
+      downloadBtn.addEventListener('click', async () => {
+        clearTimeout(saveTimer);
+        await saveEdits();
+        const html = await buildExportHtml();
+        const blob = new Blob([html], { type: 'text/html' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'task-responsibility-dashboard.html';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        setStatus(UI_TEXT[lang].downloaded);
+      });
+
+      langEnBtn.addEventListener('click', () => switchLanguage('en'));
+      langEsBtn.addEventListener('click', () => switchLanguage('es'));
+
+      editables.forEach(el => {
+        el.setAttribute('contenteditable', 'false');
+        el.addEventListener('input', scheduleSave);
+        el.addEventListener('blur', () => {
+          if(el.innerText.trim() === ''){ el.innerText = '—'; }
+        });
+      });
+
+      // Restore last-used language, then overlay any saved edits for it
+      (async function init(){
+        let startLang = 'en';
+        try{
+          const result = await window.storage.get('dashboard-lang', false);
+          if(result && (result.value === 'en' || result.value === 'es')){ startLang = result.value; }
+        }catch(e){}
+        if(startLang === 'es'){
+          lang = 'es';
+          langEnBtn.classList.remove('active');
+          langEsBtn.classList.add('active');
+          toggleBtn.textContent = UI_TEXT.es.edit;
+          resetBtn.textContent = UI_TEXT.es.reset;
+          downloadBtn.textContent = UI_TEXT.es.download;
+          applyBaseTranslation('es');
+        }
+        await loadEdits(lang);
+      })();
+    })();
+  </script>
+
+</body>
+</html>
